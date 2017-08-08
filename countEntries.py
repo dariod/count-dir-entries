@@ -9,7 +9,7 @@ if len(sys.argv) >= 2:
 
 nDirsWalked=0
 avgItemsPerDir=0.0
-maxEntries=0
+maxEntries=('',0)
 
 # Walk the directory tree and calcuate average and maximum amount of entries oer
 # directory.
@@ -20,8 +20,8 @@ for thisDir,subDirs,files in os.walk(rootDir):
     nSubDirs=len(subDirs)
     nFiles=len(files)
     nTot=nSubDirs + nFiles
-    if nTot > maxEntries:
-        maxEntries=nTot
+    if nTot > maxEntries[1]:
+        maxEntries=(thisDir,nTot)
     # We do not know the total amount of directories upfront, nor we want to
     # sum the total number of entries as that might overflow, we use an
     # iterative method to evaluate the mean:
@@ -32,4 +32,4 @@ for thisDir,subDirs,files in os.walk(rootDir):
 sys.stdout.write("\n")
 sys.stdout.flush()
 print("Mean number of entries per directory: %f") % (avgItemsPerDir)
-print("Maximum number of entries in a directory: %d") % (maxEntries)
+print("Maximum number of entries in a directory: %d (%s)") % (maxEntries[1],maxEntries[0])
