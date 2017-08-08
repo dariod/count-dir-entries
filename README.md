@@ -1,4 +1,5 @@
-This script was delevoped to help researching the behavior of a certain class users in order to better define a design problem. We needed to know how many files per directory the users deal with.
+This script was delevoped to help researching the behavior of a certain class of users in order to better define a design problem.
+We needed to know how many files per directory the users deal with.
 
 An example run:
 ```text
