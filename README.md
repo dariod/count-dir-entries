@@ -6,3 +6,4 @@ $ python ./countEntries.py ~
 Walked through 155563 directories
 Mean number of entries per directory: 5.248497
 Maximum number of entries in a directory: 35622 (/Users/dario/Library/Caches/Metadata/Safari/History)
+```
