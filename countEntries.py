@@ -2,6 +2,17 @@
 import sys
 import os
 import signal
+import argparse
+
+
+'''
+Set up argument parsing
+'''
+parser = argparse.ArgumentParser()
+parser.add_argument("--skip", "-s", help="directory name to skip over", action="append", nargs="?")
+parser.add_argument("pathname", help="directory to examine", type=str, default=".")
+args = parser.parse_args()
+
 
 '''
 As walking the filesystem might take time, when user press CTRL-C (SIGINT) print
@@ -23,13 +34,15 @@ def finalOutput():
     print("Mean number of entries per directory: %f") % (avgItemsPerDir)
     print("Maximum number of entries in a directory: %d (%s)") % (maxEntries[1],maxEntries[0])
 
-'''
-Get one parameter that is the root of the tree we want to walk over.
-'''
-rootDir="/"
-if len(sys.argv) >= 2:
-    rootDir=sys.argv[1]
 
+def skipDir(dir):
+    if (args.skip != None) and (dir in args.skip):
+        return True
+    else:
+        return False
+
+
+rootDir=args.pathname
 nDirsWalked=0
 avgItemsPerDir=0.0
 maxEntries=('',0)
@@ -40,7 +53,13 @@ entries per directory.
 '''
 sys.stdout.write(("Walked through %d directories") % (nDirsWalked))
 sys.stdout.flush()
-for thisDir,subDirs,files in os.walk(rootDir):
+for thisDir,subDirs,files in os.walk(rootDir,topdown=True):
+
+    '''
+    Skip over given directories
+    '''
+    subDirs[:] = [d for d in subDirs if not skipDir(d)]
+
     nDirsWalked+=1
     nSubDirs=len(subDirs)
     nFiles=len(files)
