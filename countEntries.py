@@ -15,7 +15,7 @@ signal.signal(signal.SIGINT, handlerSIGINT)
 
 '''
 This is to avoid writing the code twice, this function is used to write out the
-sumamry at the end of the run or when we catch a CTRL-C (SIGINT)
+summary at the end of the run or when we catch a CTRL-C (SIGINT)
 '''
 def finalOutput():
     sys.stdout.write("\n")
