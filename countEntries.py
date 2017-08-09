@@ -24,7 +24,7 @@ def finalOutput():
     print("Maximum number of entries in a directory: %d (%s)") % (maxEntries[1],maxEntries[0])
 
 '''
-Get one parameter that is the root of the tree we want to count
+Get one parameter that is the root of the tree we want to walk over.
 '''
 rootDir="/"
 if len(sys.argv) >= 2:
