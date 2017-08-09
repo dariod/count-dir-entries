@@ -35,7 +35,7 @@ avgItemsPerDir=0.0
 maxEntries=('',0)
 
 '''
-Walk the directory tree and calcuate average (mean) and maximum amount of
+Walk the directory tree and calculate average (mean) and maximum amount of
 entries per directory.
 '''
 sys.stdout.write(("Walked through %d directories") % (nDirsWalked))
