@@ -81,7 +81,7 @@ class directorySummary:
         dev=0.0
         if (self.__nDirs > 1):
             for x in self.__histogram:
-                dev+=(self.__histogram[x] - self.__meanEntries) ** 2
+                dev+=((x - self.__meanEntries) ** 2) * self.__histogram[x]
             dev = sqrt(dev / (self.__nDirs - 1))
         return dev
 
