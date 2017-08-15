@@ -1,7 +1,8 @@
 This script was developed to help researching the behavior of a certain class users in order to better define a design problem. We needed to know how many files per directory the users deal with.
 
+```text
 $ python ./countEntries.py -h
-usage: countEntries.py [-h] [--skip [SKIP]] [--csv] pathname
+usage: countEntries.py [-h] [--skip [SKIP]] [--csv] [--silent] pathname
 
 positional arguments:
   pathname              directory to examine
@@ -11,7 +12,8 @@ optional arguments:
   --skip [SKIP], -s [SKIP]
                         directory name to skip over
   --csv, -csv           print a CSV summary. Suppresses other output.
-
+  --silent, -silent     suppresses progress output.
+```
 
 An example run:
 ```text

@@ -12,6 +12,7 @@ Set up argument parsing
 parser = argparse.ArgumentParser()
 parser.add_argument("--skip", "-s", help="directory name to skip over", action="append", nargs="?")
 parser.add_argument("--csv", "-csv", help="print a CSV summary. Suppresses other output.", action="store_true")
+parser.add_argument("--silent", "-silent", help="suppresses progress output.", action="store_true")
 parser.add_argument("pathname", help="directory to examine", type=str, default=".")
 args = parser.parse_args()
 
@@ -21,6 +22,8 @@ As walking the filesystem might take time, when user press CTRL-C (SIGINT) print
 out partial results.
 '''
 def handlerSIGINT(signal, frame):
+        if (args.silent):
+            sys.stdout.write("\n")
         finalOutput()
         sys.exit(0)
 
@@ -52,7 +55,7 @@ class directorySummary:
             self.__histogram[n]=1
 
         '''
-        Update maximum numebr of entries per directory
+        Update maximum number of entries per directory
         '''
         if n > self.__maxEntries[1]:
             if pathname != None:
@@ -99,8 +102,10 @@ def finalOutput():
     if args.csv:
         summary.csvSummaryDump()
     else:
-        sys.stdout.write("\n")
-        sys.stdout.flush()
+        if (not args.silent):
+            sys.stdout.write("\n")
+        else:
+            sys.stdout.write(("Walked through %d directories (%0.2f directories per second)\n") % (summary.nEntries(),summary.nEntries()/(time() - startTime)))
         print("Maximum number of entries in a directory: %d (%s)") % (summary.maxEntries()[1],summary.maxEntries()[0])
         print("Mean number of entries per directory: %f") % (summary.meanEntries())
         print("Standard deviation for the number of entries per directory: %f") % (summary.stdDev())
@@ -119,7 +124,7 @@ Walk the directory tree and calculate average (mean) and maximum amount of
 entries per directory.
 '''
 startTime=time()
-if not args.csv:
+if (not args.silent) and (not args.csv):
     sys.stdout.write(("Walked through %d directories (0 directories per second)") % (summary.nEntries()))
 sys.stdout.flush()
 for thisDir,subDirs,files in os.walk(rootDir,topdown=True):
@@ -137,8 +142,9 @@ for thisDir,subDirs,files in os.walk(rootDir,topdown=True):
     nTot=nSubDirs + nFiles
     summary.addDir(nTot,thisDir)
 
-    if not args.csv:
+    if (not args.silent) and (not args.csv):
         sys.stdout.write(("\rWalked through %d directories (%0.2f directories per second)") % (summary.nEntries(),summary.nEntries()/(time() - startTime)))
         sys.stdout.flush()
 
 finalOutput()
+sys.stdout.flush()
