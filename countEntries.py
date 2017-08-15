@@ -11,6 +11,7 @@ Set up argument parsing
 '''
 parser = argparse.ArgumentParser()
 parser.add_argument("--skip", "-s", help="directory name to skip over", action="append", nargs="?")
+parser.add_argument("--csv", "-csv", help="print a CSV summary. Suppresses other output.", action="store_true")
 parser.add_argument("pathname", help="directory to examine", type=str, default=".")
 args = parser.parse_args()
 
@@ -85,20 +86,24 @@ class directorySummary:
             dev = sqrt(dev / (self.__nDirs - 1))
         return dev
 
-    def dump(self):
+    def csvSummaryDump(self):
+        sys.stdout.write("n.Entries per directory,Frequency\n")
         for n in sorted(self.__histogram):
-            print "%d: %d" % (n,self.__histogram[n])
+            print "%d,%d" % (n,self.__histogram[n])
 
 '''
 This is to avoid writing the code twice, this function is used to write out the
 summary at the end of the run or when we catch a CTRL-C (SIGINT)
 '''
 def finalOutput():
-    sys.stdout.write("\n")
-    sys.stdout.flush()
-    print("Maximum number of entries in a directory: %d (%s)") % (summary.maxEntries()[1],summary.maxEntries()[0])
-    print("Mean number of entries per directory: %f") % (summary.meanEntries())
-    print("Standard deviation for the number of entries per directory: %f") % (summary.stdDev())
+    if args.csv:
+        summary.csvSummaryDump()
+    else:
+        sys.stdout.write("\n")
+        sys.stdout.flush()
+        print("Maximum number of entries in a directory: %d (%s)") % (summary.maxEntries()[1],summary.maxEntries()[0])
+        print("Mean number of entries per directory: %f") % (summary.meanEntries())
+        print("Standard deviation for the number of entries per directory: %f") % (summary.stdDev())
 
 def skipDir(dir):
     if (args.skip != None) and (dir in args.skip):
@@ -113,7 +118,8 @@ summary=directorySummary()
 Walk the directory tree and calculate average (mean) and maximum amount of
 entries per directory.
 '''
-sys.stdout.write(("Walked through %d directories") % (summary.nEntries()))
+if not args.csv:
+    sys.stdout.write(("Walked through %d directories") % (summary.nEntries()))
 sys.stdout.flush()
 for thisDir,subDirs,files in os.walk(rootDir,topdown=True):
 
@@ -130,6 +136,8 @@ for thisDir,subDirs,files in os.walk(rootDir,topdown=True):
     nTot=nSubDirs + nFiles
     summary.addDir(nTot,thisDir)
 
-    sys.stdout.write(("\rWalked through %d directories") % (summary.nEntries()))
-    sys.stdout.flush()
+    if not args.csv:
+        sys.stdout.write(("\rWalked through %d directories") % (summary.nEntries()))
+        sys.stdout.flush()
+
 finalOutput()
