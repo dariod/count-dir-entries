@@ -4,7 +4,7 @@ import os
 import signal
 import argparse
 from math import sqrt
-
+from time import time
 
 '''
 Set up argument parsing
@@ -118,8 +118,9 @@ summary=directorySummary()
 Walk the directory tree and calculate average (mean) and maximum amount of
 entries per directory.
 '''
+startTime=time()
 if not args.csv:
-    sys.stdout.write(("Walked through %d directories") % (summary.nEntries()))
+    sys.stdout.write(("Walked through %d directories (0 directories per second)") % (summary.nEntries()))
 sys.stdout.flush()
 for thisDir,subDirs,files in os.walk(rootDir,topdown=True):
 
@@ -137,7 +138,7 @@ for thisDir,subDirs,files in os.walk(rootDir,topdown=True):
     summary.addDir(nTot,thisDir)
 
     if not args.csv:
-        sys.stdout.write(("\rWalked through %d directories") % (summary.nEntries()))
+        sys.stdout.write(("\rWalked through %d directories (%0.2f directories per second)") % (summary.nEntries(),summary.nEntries()/(time() - startTime)))
         sys.stdout.flush()
 
 finalOutput()
